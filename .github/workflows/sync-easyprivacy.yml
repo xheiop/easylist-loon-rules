@@ -1,0 +1,59 @@
+name: Sync EasyPrivacy for Loon
+
+on:
+  schedule:
+    - cron: "23 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-easyprivacy
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run unit tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Download and convert EasyPrivacy
+        run: |
+          python scripts/convert_easyprivacy.py \
+            --input-url https://easylist-downloads.adblockplus.org/easyprivacy.txt \
+            --output rules/easyprivacy.list \
+            --domain-output rules/easyprivacy-domain.list \
+            --allow-output rules/easyprivacy-allow.list \
+            --stats-output rules/stats.json \
+            --min-rules 40000
+
+      - name: Validate generated files
+        run: |
+          test -s rules/easyprivacy.list
+          test -s rules/easyprivacy-domain.list
+          test -s rules/easyprivacy-allow.list
+          python -m json.tool rules/stats.json >/dev/null
+
+      - name: Commit updated rules
+        run: |
+          if git diff --quiet -- rules; then
+            echo "EasyPrivacy is already up to date."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add rules
+          git commit -m "chore: sync EasyPrivacy rules"
+          git push
