@@ -1,8 +1,9 @@
 import unittest
 
-from scripts.convert_easyprivacy import (
+from scripts.convert_abp_to_loon import (
     compact_domains,
     convert,
+    parse_metadata,
     split_options,
     wildcard_pattern_to_loon,
 )
@@ -50,6 +51,11 @@ class PatternConversionTests(unittest.TestCase):
 
 
 class ConversionTests(unittest.TestCase):
+    def test_license_spelling_is_normalized(self):
+        metadata = parse_metadata(["! Title: EasyList China", "! License: https://example.test/"])
+        self.assertEqual(metadata["Title"], "EasyList China")
+        self.assertEqual(metadata["Licence"], "https://example.test/")
+
     def test_convert_domain_regex_exception_and_skips(self):
         source = """[Adblock Plus 1.1]
 ! Version: 123

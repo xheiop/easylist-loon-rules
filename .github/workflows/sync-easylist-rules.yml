@@ -1,4 +1,4 @@
-name: Sync EasyPrivacy for Loon
+name: Sync EasyList rules for Loon
 
 on:
   schedule:
@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: sync-easyprivacy
+  group: sync-easylist-rules
   cancel-in-progress: false
 
 jobs:
@@ -31,29 +31,45 @@ jobs:
 
       - name: Download and convert EasyPrivacy
         run: |
-          python scripts/convert_easyprivacy.py \
+          python scripts/convert_abp_to_loon.py \
             --input-url https://easylist-downloads.adblockplus.org/easyprivacy.txt \
+            --expected-title EasyPrivacy \
             --output rules/easyprivacy.list \
             --domain-output rules/easyprivacy-domain.list \
             --allow-output rules/easyprivacy-allow.list \
             --stats-output rules/stats.json \
             --min-rules 40000
 
+      - name: Download and convert EasyList China
+        run: |
+          python scripts/convert_abp_to_loon.py \
+            --input-url https://easylist-downloads.adblockplus.org/easylistchina.txt \
+            --expected-title "EasyList China" \
+            --output rules/easylistchina.list \
+            --domain-output rules/easylistchina-domain.list \
+            --allow-output rules/easylistchina-allow.list \
+            --stats-output rules/easylistchina-stats.json \
+            --min-rules 1000
+
       - name: Validate generated files
         run: |
           test -s rules/easyprivacy.list
           test -s rules/easyprivacy-domain.list
           test -s rules/easyprivacy-allow.list
+          test -s rules/easylistchina.list
+          test -s rules/easylistchina-domain.list
+          test -s rules/easylistchina-allow.list
           python -m json.tool rules/stats.json >/dev/null
+          python -m json.tool rules/easylistchina-stats.json >/dev/null
 
       - name: Commit updated rules
         run: |
           if git diff --quiet -- rules; then
-            echo "EasyPrivacy is already up to date."
+            echo "All filter lists are already up to date."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add rules
-          git commit -m "chore: sync EasyPrivacy rules"
+          git commit -m "chore: sync EasyList rules"
           git push
