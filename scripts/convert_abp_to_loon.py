@@ -49,7 +49,7 @@ class ConversionResult:
     regexes: set[str] = field(default_factory=set)
     allow_regexes: set[str] = field(default_factory=set)
     skipped: Counter[str] = field(default_factory=Counter)
-    approximated_options: Counter[str] = field(default_factory=Counter)
+    discarded_options: Counter[str] = field(default_factory=Counter)
     source_lines: int = 0
     metadata: dict[str, str] = field(default_factory=dict)
 
@@ -383,10 +383,14 @@ def convert(text: str) -> ConversionResult:
                 result.allow_regexes.add(expression)
             continue
 
-        for option in options:
-            name = option_name(option)
-            if name not in {"important", "match-case"}:
-                result.approximated_options[name] += 1
+        unsupported_options = [
+            option for option in options if option_name(option) not in {"important", "match-case"}
+        ]
+        if unsupported_options:
+            for option in unsupported_options:
+                result.discarded_options[option_name(option)] += 1
+            result.skipped["unsupported_block_options"] += 1
+            continue
 
         converted_domain = domain_rule(pattern)
         if converted_domain:
@@ -462,7 +466,7 @@ def stats_document(result: ConversionResult, source: str) -> dict[str, object]:
             "url_regex": len(result.regexes),
             "unconditional_exceptions": len(result.allow_regexes),
         },
-        "approximated_abp_options": dict(sorted(result.approximated_options.items())),
+        "discarded_abp_options": dict(sorted(result.discarded_options.items())),
         "skipped": dict(sorted(result.skipped.items())),
     }
 

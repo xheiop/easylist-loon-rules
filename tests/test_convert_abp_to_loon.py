@@ -66,8 +66,36 @@ class ConversionTests(unittest.TestCase):
         result = convert(source)
 
         self.assertNotIn("(?i).*", result.regexes)
-        self.assertEqual(result.skipped["unsafe_global_pattern"], 1)
+        self.assertEqual(result.skipped["unsupported_block_options"], 1)
+        self.assertEqual(result.discarded_options["ping"], 1)
+        self.assertEqual(result.discarded_options["third-party"], 1)
         self.assertEqual(result.domains, {"DOMAIN-SUFFIX,tracker.example"})
+
+    def test_unconditional_catch_all_still_fails_safety_check(self):
+        source = """[Adblock Plus 1.1]
+! Title: Test
+*
+||tracker.example^
+"""
+        result = convert(source)
+
+        self.assertNotIn("(?i).*", result.regexes)
+        self.assertEqual(result.skipped["unsafe_global_pattern"], 1)
+
+    def test_scoped_whole_domain_rule_is_not_broadened(self):
+        source = """[Adblock Plus 1.1]
+! Title: EasyList China
+||baidu.com^$domain=pos.baidu.com
+||baidu.com^$subdocument,domain=dm5.com|dm5.hk
+||tracker.example^
+||important.example^$important
+"""
+        result = convert(source)
+
+        self.assertNotIn("DOMAIN-SUFFIX,baidu.com", result.domains)
+        self.assertIn("DOMAIN-SUFFIX,tracker.example", result.domains)
+        self.assertIn("DOMAIN-SUFFIX,important.example", result.domains)
+        self.assertEqual(result.skipped["unsupported_block_options"], 2)
 
     def test_license_spelling_is_normalized(self):
         metadata = parse_metadata(["! Title: EasyList China", "! License: https://example.test/"])
@@ -93,7 +121,7 @@ site.example##.tracking
         self.assertEqual(result.skipped["scoped_exception"], 1)
         self.assertEqual(result.skipped["cosmetic"], 1)
         self.assertEqual(result.skipped["non_blocking_modifier"], 1)
-        self.assertEqual(result.approximated_options["third-party"], 1)
+        self.assertEqual(result.discarded_options["third-party"], 1)
 
     def test_badfilter_disables_matching_rule(self):
         source = """[Adblock Plus 1.1]
