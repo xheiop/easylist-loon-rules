@@ -16,14 +16,14 @@
 
 ## Loon 使用方法
 
-将下面四行加入 Loon 配置的 `[Remote Rule]`。请把 `<owner>/<repo>` 和分支名替换成实际仓库信息：
+将下面四行加入 Loon 配置的 `[Remote Rule]`：
 
 ```ini
 [Remote Rule]
-https://raw.githubusercontent.com/<owner>/<repo>/main/rules/easyprivacy-allow.list, policy=DIRECT, tag=EasyPrivacy Allow, enabled=true
-https://raw.githubusercontent.com/<owner>/<repo>/main/rules/easylistchina-allow.list, policy=DIRECT, tag=EasyList China Allow, enabled=true
-https://raw.githubusercontent.com/<owner>/<repo>/main/rules/easyprivacy.list, policy=REJECT, tag=EasyPrivacy, enabled=true
-https://raw.githubusercontent.com/<owner>/<repo>/main/rules/easylistchina.list, policy=REJECT, tag=EasyList China, enabled=true
+https://raw.githubusercontent.com/xheiop/easylist-loon-rules/main/rules/easyprivacy-allow.list, policy=DIRECT, tag=EasyPrivacy Allow, enabled=true
+https://raw.githubusercontent.com/xheiop/easylist-loon-rules/main/rules/easylistchina-allow.list, policy=DIRECT, tag=EasyList China Allow, enabled=true
+https://raw.githubusercontent.com/xheiop/easylist-loon-rules/main/rules/easyprivacy.list, policy=REJECT, tag=EasyPrivacy, enabled=true
+https://raw.githubusercontent.com/xheiop/easylist-loon-rules/main/rules/easylistchina.list, policy=REJECT, tag=EasyList China, enabled=true
 ```
 
 如果更看重性能，可将两个拦截 URL 分别改为对应的 `*-domain.list`。所有例外规则必须排在所有拦截规则前面，因为 ABP 的例外规则具有优先权，而 Loon 按规则顺序匹配。
