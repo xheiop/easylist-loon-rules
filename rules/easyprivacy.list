@@ -44202,7 +44202,6 @@ URL-REGEX,(?i)%2Fo\.gif\&
 URL-REGEX,(?i)%2Fopen\.aspx%3F
 URL-REGEX,(?i)%2Frw%2Fbeacon_
 URL-REGEX,(?i)(?:[^A-Za-z0-9_.%-]|$)endpoint=track(?:[^A-Za-z0-9_.%-]|$)
-URL-REGEX,(?i).*
 URL-REGEX,(?i)/.*JmVu\.js\?sp=
 URL-REGEX,(?i)/0\.gif\?
 URL-REGEX,(?i)/0c\.gif\?

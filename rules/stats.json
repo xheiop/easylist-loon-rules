@@ -14,17 +14,18 @@
     "xmlhttprequest": 78
   },
   "generated": {
-    "block_total": 52243,
+    "block_total": 52242,
     "domain": 44188,
     "unconditional_exceptions": 44,
-    "url_regex": 8055
+    "url_regex": 8054
   },
   "skipped": {
     "cosmetic": 2,
     "metadata_or_comment": 678,
     "non_blocking_modifier": 3,
     "scoped_exception": 792,
-    "unconvertible_network_rule": 7
+    "unconvertible_network_rule": 7,
+    "unsafe_global_pattern": 1
   },
   "source": "https://easylist-downloads.adblockplus.org/easyprivacy.txt",
   "source_lines": 54111,

@@ -34,6 +34,11 @@ NON_BLOCKING_MODIFIERS = {
     "uritransform",
     "urlskip",
 }
+CATCH_ALL_PROBES = (
+    "https://example.com/",
+    "http://localhost/",
+    "https://sub.example.net/a?b=c",
+)
 DOMAIN_PATTERN = re.compile(r"^\|\|([A-Za-z0-9._-]+)\^$")
 OPTION_NAME_PATTERN = re.compile(r"^~?([A-Za-z][A-Za-z0-9_-]*)(?:=.*)?$")
 
@@ -318,6 +323,16 @@ def to_loon_regex(pattern: str, options: list[str]) -> str | None:
     return expression
 
 
+def is_catch_all_expression(expression: str) -> bool:
+    """Return whether a URL regex effectively matches every ordinary URL."""
+
+    try:
+        compiled = re.compile(expression)
+    except re.error:
+        return False
+    return all(compiled.search(url) is not None for url in CATCH_ALL_PROBES)
+
+
 def convert(text: str) -> ConversionResult:
     lines = text.splitlines()
     result = ConversionResult(source_lines=len(lines), metadata=parse_metadata(lines))
@@ -362,6 +377,8 @@ def convert(text: str) -> ConversionResult:
             expression = to_loon_regex(pattern, options)
             if expression is None:
                 result.skipped["unconvertible_exception"] += 1
+            elif is_catch_all_expression(expression):
+                result.skipped["unsafe_global_exception"] += 1
             else:
                 result.allow_regexes.add(expression)
             continue
@@ -383,6 +400,8 @@ def convert(text: str) -> ConversionResult:
         expression = to_loon_regex(pattern, options)
         if expression is None:
             result.skipped["unconvertible_network_rule"] += 1
+        elif is_catch_all_expression(expression):
+            result.skipped["unsafe_global_pattern"] += 1
         else:
             result.regexes.add(expression)
 
@@ -467,6 +486,8 @@ def validate_result(result: ConversionResult, minimum: int) -> None:
     for expression in result.regexes | result.allow_regexes:
         if "," in expression or "\n" in expression or "\r" in expression:
             raise RuntimeError(f"invalid URL-REGEX field: {expression}")
+        if is_catch_all_expression(expression):
+            raise RuntimeError(f"unsafe catch-all URL-REGEX: {expression}")
 
 
 def main(argv: list[str] | None = None) -> int:

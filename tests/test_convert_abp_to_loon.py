@@ -3,6 +3,7 @@ import unittest
 from scripts.convert_abp_to_loon import (
     compact_domains,
     convert,
+    is_catch_all_expression,
     parse_metadata,
     split_options,
     wildcard_pattern_to_loon,
@@ -33,6 +34,11 @@ class SplitOptionsTests(unittest.TestCase):
 
 
 class PatternConversionTests(unittest.TestCase):
+    def test_catch_all_detection(self):
+        self.assertTrue(is_catch_all_expression(r"(?i).*"))
+        self.assertTrue(is_catch_all_expression(r"^https?://"))
+        self.assertFalse(is_catch_all_expression(r"tracker\.example"))
+
     def test_domain_anchor_and_separator(self):
         expression = wildcard_pattern_to_loon("||example.com^", match_case=False)
         self.assertEqual(
@@ -51,6 +57,18 @@ class PatternConversionTests(unittest.TestCase):
 
 
 class ConversionTests(unittest.TestCase):
+    def test_context_only_wildcard_is_not_emitted_as_global_reject(self):
+        source = """[Adblock Plus 1.1]
+! Title: EasyPrivacy
+*$ping,third-party
+||tracker.example^
+"""
+        result = convert(source)
+
+        self.assertNotIn("(?i).*", result.regexes)
+        self.assertEqual(result.skipped["unsafe_global_pattern"], 1)
+        self.assertEqual(result.domains, {"DOMAIN-SUFFIX,tracker.example"})
+
     def test_license_spelling_is_normalized(self):
         metadata = parse_metadata(["! Title: EasyList China", "! License: https://example.test/"])
         self.assertEqual(metadata["Title"], "EasyList China")
