@@ -29,11 +29,11 @@
   "source": "https://easylist-downloads.adblockplus.org/easyprivacy.txt",
   "source_lines": 54154,
   "upstream": {
-    "Checksum": "Gl+qIY/jvkfhmpqfajzZPg",
+    "Checksum": "EST9YV7rghEhZoXq7WI2gQ",
     "Homepage": "https://easylist.to/",
-    "Last modified": "17 Sep 2026 08:31 UTC",
+    "Last modified": "18 Sep 2026 08:12 UTC",
     "Licence": "https://easylist.to/pages/licence.html",
     "Title": "EasyPrivacy",
-    "Version": "202609170831"
+    "Version": "202609180812"
   }
 }
