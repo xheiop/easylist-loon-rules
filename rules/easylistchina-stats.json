@@ -1,37 +1,37 @@
 {
   "discarded_abp_options": {
-    "domain": 216,
+    "domain": 215,
     "image": 34,
     "media": 1,
     "object": 19,
     "popup": 79,
     "script": 124,
     "subdocument": 46,
-    "third-party": 360,
+    "third-party": 358,
     "websocket": 5,
     "xmlhttprequest": 19
   },
   "generated": {
-    "block_total": 10535,
-    "domain": 5738,
+    "block_total": 10546,
+    "domain": 5749,
     "unconditional_exceptions": 442,
     "url_regex": 4797
   },
   "skipped": {
-    "cosmetic": 6871,
+    "cosmetic": 6872,
     "metadata_or_comment": 108,
     "non_blocking_modifier": 25,
     "scoped_exception": 543,
-    "unsupported_block_options": 676
+    "unsupported_block_options": 674
   },
   "source": "https://easylist-downloads.adblockplus.org/easylistchina.txt",
-  "source_lines": 19200,
+  "source_lines": 19210,
   "upstream": {
-    "Checksum": "SxmgyoiYZoTKiQa2iW0Bgg",
+    "Checksum": "ifLQFx9L3oUt7Xf6H3y0RQ",
     "Homepage": "https://github.com/easylist/easylistchina/",
-    "Last modified": "29 Sep 2026 09:53 UTC",
+    "Last modified": "30 Sep 2026 09:43 UTC",
     "Licence": "https://easylist.to/pages/licence.html",
     "Title": "EasyList China",
-    "Version": "202609290953"
+    "Version": "202609300943"
   }
 }
