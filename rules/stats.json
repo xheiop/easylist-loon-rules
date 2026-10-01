@@ -1,7 +1,7 @@
 {
   "discarded_abp_options": {
     "document": 1,
-    "domain": 185,
+    "domain": 186,
     "image": 355,
     "media": 1,
     "other": 3,
@@ -14,26 +14,26 @@
     "xmlhttprequest": 83
   },
   "generated": {
-    "block_total": 47993,
-    "domain": 40573,
+    "block_total": 48013,
+    "domain": 40586,
     "unconditional_exceptions": 44,
-    "url_regex": 7420
+    "url_regex": 7427
   },
   "skipped": {
     "cosmetic": 2,
     "metadata_or_comment": 679,
     "non_blocking_modifier": 3,
-    "scoped_exception": 801,
-    "unsupported_block_options": 4705
+    "scoped_exception": 802,
+    "unsupported_block_options": 4706
   },
   "source": "https://easylist-downloads.adblockplus.org/easyprivacy.txt",
-  "source_lines": 54229,
+  "source_lines": 54251,
   "upstream": {
-    "Checksum": "d/iyTbRT6onOpGrjuUhusA",
+    "Checksum": "pWb5LlfhsVyF6E33mEJBXQ",
     "Homepage": "https://easylist.to/",
-    "Last modified": "30 Sep 2026 09:43 UTC",
+    "Last modified": "01 Oct 2026 10:13 UTC",
     "Licence": "https://easylist.to/pages/licence.html",
     "Title": "EasyPrivacy",
-    "Version": "202609300943"
+    "Version": "202610011013"
   }
 }
